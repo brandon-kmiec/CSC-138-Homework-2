@@ -3,25 +3,18 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.*;
 
 public class A2Part1 {
 
     public static void main(String[] args) {
-
-        // TODO: 11/7/2023 use string tokenizer to find the max vertex value to make the graph.  Then use string
-        //  tokenizer again to add edges with weights.
-
-
-//        initializeGraph(args[0]);
         // TODO: 11/7/2023 change "graphData.txt" to be args[0] before submitting
 //        ArrayList<String> graphData = graphFromFile(args[0]);
         ArrayList<String> graphData = graphFromFile("graphData.txt");
         Graph graph = new Graph(initializeGraph(graphData));
         populateGraph(graph, graphData);
 
-//        System.out.println(args[0]);
+
     }
 
     private static ArrayList<String> graphFromFile(String fileName) {
