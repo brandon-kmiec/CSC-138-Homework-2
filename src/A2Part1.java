@@ -4,25 +4,28 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Scanner;
+import java.util.*;
 
 public class A2Part1 {
+
     public static void main(String[] args) {
 
         // TODO: 11/7/2023 use string tokenizer to find the max vertex value to make the graph.  Then use string
         //  tokenizer again to add edges with weights.
 
-        initializeGraph(args[0]);
+
+//        initializeGraph(args[0]);
+        // TODO: 11/7/2023 change "graphData.txt" to be args[0] before submitting
+//        ArrayList<String> graphData = graphFromFile(args[0]);
+        ArrayList<String> graphData = graphFromFile("graphData.txt");
+        Graph graph = new Graph(initializeGraph(graphData));
+        populateGraph(graph, graphData);
 
 //        System.out.println(args[0]);
     }
 
-    public static void initializeGraph(String fileName) {
+    private static ArrayList<String> graphFromFile(String fileName) {
         ArrayList<String> fileContents = new ArrayList<>();
-        int maxVertexValue = -1;
 
         try {
             File file = new File(fileName);
@@ -32,6 +35,41 @@ public class A2Part1 {
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
+        }
+
+        return fileContents;
+    }
+
+    private static int initializeGraph(ArrayList<String> graphData) {
+        int maxVertexValue = -1;
+        String raw, vertex1, vertex2;
+        StringTokenizer st;
+
+        for (String data : graphData) {
+            raw = data;
+            st = new StringTokenizer(raw, " ");
+            vertex1 = st.nextToken();
+            vertex2 = st.nextToken();
+            if (Integer.parseInt(vertex1) > maxVertexValue)
+                maxVertexValue = Integer.parseInt(vertex1);
+            if (Integer.parseInt(vertex2) > maxVertexValue)
+                maxVertexValue = Integer.parseInt(vertex2);
+        }
+        return maxVertexValue + 1;
+    }
+
+    private static void populateGraph(Graph graph, ArrayList<String> graphData) {
+        String raw;
+        int vertex1, vertex2, weight;
+        StringTokenizer st;
+
+        for (String data : graphData) {
+            raw = data;
+            st = new StringTokenizer(raw, " ");
+            vertex1 = Integer.parseInt(st.nextToken());
+            vertex2 = Integer.parseInt(st.nextToken());
+            weight = Integer.parseInt(st.nextToken());
+            graph.addEdge(vertex1, vertex2, weight);
         }
     }
 }
@@ -50,11 +88,11 @@ class Graph {
     }//end constructor
 
     //Methods
-    public int V() {
+    public int getNumVertices() {
         return v;
     }//end v
 
-    public int E() {
+    public int getNumEdges() {
         return e;
     }//end e
 
@@ -65,7 +103,7 @@ class Graph {
     }//end addEdge
 
     public boolean isAdjacent(int v1, int v2) {
-        return g[v1][v2] >= 0;
+        return g[v1][v2] > 0;
     }//end isAdjacent
 
     public boolean isConnected(int v1, int v2) {
@@ -85,7 +123,7 @@ class Graph {
     public int[] adj(int v) {
         ArrayList<Integer> al = new ArrayList<Integer>();
         for (int i = 0; i < this.v; i++)
-            if (g[v][i] >= 0)
+            if (g[v][i] > 0)
                 al.add(i);
 
         int[] ret = new int[al.size()];
