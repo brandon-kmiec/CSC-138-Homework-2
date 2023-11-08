@@ -13,7 +13,7 @@ public class A2Part1 {
         ArrayList<String> graphData = graphFromFile("graphData.txt");
         Graph graph = new Graph(initializeGraph(graphData));
         populateGraph(graph, graphData);
-
+        Dijkstra dijkstra = new Dijkstra(graph);
 
     }
 
@@ -66,6 +66,24 @@ public class A2Part1 {
         }
     }
 }
+
+
+class Dijkstra {
+    private Graph graph;
+
+    public Dijkstra(Graph graph) {
+        this.graph = graph;
+    }
+
+    public void runDijkstra() {
+
+    }
+
+    private void outputTable() {
+
+    }
+}
+
 
 class Graph {
     //Fields
