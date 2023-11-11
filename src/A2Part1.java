@@ -8,13 +8,16 @@ import java.util.*;
 public class A2Part1 {
 
     public static void main(String[] args) {
-        // TODO: 11/7/2023 change "graphData.txt" to be args[0] before submitting
-//        ArrayList<String> graphData = graphFromFile(args[0]);
-        ArrayList<String> graphData = graphFromFile("graphData.txt");
-        Graph graph = new Graph(initializeGraph(graphData));
-        populateGraph(graph, graphData);
-        Dijkstra dijkstra = new Dijkstra(graph);
+        ArrayList<String> graphData = graphFromFile(args[0]);
+        int sourceNode = Integer.parseInt(args[1]);
 
+        Set<Integer> nodes;
+        nodes = setOfNodes(graphData);
+        Graph graph = new Graph(nodes.size());
+
+        populateGraph(graph, graphData);
+        Dijkstra dijkstra = new Dijkstra(graph, nodes, sourceNode);
+        dijkstra.runDijkstra();
     }
 
     private static ArrayList<String> graphFromFile(String fileName) {
@@ -33,22 +36,18 @@ public class A2Part1 {
         return fileContents;
     }
 
-    private static int initializeGraph(ArrayList<String> graphData) {
-        int maxVertexValue = -1;
-        String raw, vertex1, vertex2;
+    private static Set<Integer> setOfNodes(ArrayList<String> graphData) {
+        String raw;
         StringTokenizer st;
+        Set<Integer> nodes = new HashSet<>();
 
         for (String data : graphData) {
             raw = data;
             st = new StringTokenizer(raw, " ");
-            vertex1 = st.nextToken();
-            vertex2 = st.nextToken();
-            if (Integer.parseInt(vertex1) > maxVertexValue)
-                maxVertexValue = Integer.parseInt(vertex1);
-            if (Integer.parseInt(vertex2) > maxVertexValue)
-                maxVertexValue = Integer.parseInt(vertex2);
+            nodes.add(Integer.parseInt(st.nextToken()));
+            nodes.add(Integer.parseInt(st.nextToken()));
         }
-        return maxVertexValue + 1;
+        return nodes;
     }
 
     private static void populateGraph(Graph graph, ArrayList<String> graphData) {
@@ -70,17 +69,76 @@ public class A2Part1 {
 
 class Dijkstra {
     private Graph graph;
+    private int sourceNode;
+    private int[] leastCostEstimate; // current estimate of cost of least-cost-path from source to destination
+    private int[] predecessorNode; // predecessor node along path from source to destination
+    private Set<Integer> nodes;
+    private Set<Integer> nodesUnknownLCP; // set of nodes whose least-cost-path is not definitively known
 
-    public Dijkstra(Graph graph) {
+    public Dijkstra(Graph graph, Set<Integer> nodes, int sourceNode) {
         this.graph = graph;
+        this.nodes = nodes;
+        this.sourceNode = sourceNode;
+
+        nodesUnknownLCP = new HashSet<>(nodes);
+        nodesUnknownLCP.remove(sourceNode);
+
+        leastCostEstimate = new int[nodes.size()];
+        predecessorNode = new int[nodes.size()];
     }
 
     public void runDijkstra() {
+        initialize();
 
+        while (!nodesUnknownLCP.isEmpty()) {
+            int minNodeCost = Integer.MAX_VALUE;
+            int nodeWithMinCost = -1;
+            for (int node : nodesUnknownLCP) {
+                if (leastCostEstimate[node] <= minNodeCost) {
+                    minNodeCost = leastCostEstimate[node];
+                    nodeWithMinCost = node;
+                }
+            }
+            nodesUnknownLCP.remove(nodeWithMinCost);
+
+            for (int node : nodesUnknownLCP) {
+                if (graph.isAdjacent(node, nodeWithMinCost)) {
+                    int min = Math.min(leastCostEstimate[node], leastCostEstimate[nodeWithMinCost] +
+                            graph.getWeight(node, nodeWithMinCost));
+                    if (leastCostEstimate[node] > min)
+                        predecessorNode[node] = nodeWithMinCost;
+
+                    leastCostEstimate[node] = min;
+                }
+            }
+        }
+
+        outputTable();
+    }
+
+    private void initialize() {
+        for (int node : nodesUnknownLCP) {
+            if (graph.isAdjacent(node, sourceNode)) {
+                leastCostEstimate[node] = graph.getWeight(node, sourceNode);
+                predecessorNode[node] = sourceNode;
+            } else {
+                leastCostEstimate[node] = Integer.MAX_VALUE;
+            }
+        }
     }
 
     private void outputTable() {
-
+        for (int node : nodes) {
+            String output = "" + leastCostEstimate[node];
+            if (node != sourceNode) {
+                int currentNode = node;
+                while (currentNode != sourceNode) {
+                    output = currentNode + " " + output;
+                    currentNode = predecessorNode[currentNode];
+                }
+                System.out.println(sourceNode + " " + output);
+            }
+        }
     }
 }
 
