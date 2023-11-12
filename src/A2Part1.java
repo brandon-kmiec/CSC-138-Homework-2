@@ -75,6 +75,17 @@ public class A2Part1 {
 }
 
 
+// Pseudocode
+//      Initialization:
+//        1. Create a set of nodes whose least-cost-path is not definitively known
+//        2. For all nodes, if the node is adjacent to the sourceNode, set the cost equal to the weight;
+//           else set to Integer.MAX_VALUE
+//      3. Find a node in the set of nodes with unknown least-cost-path such that the current least cost estimate of
+//         the node is a minimum
+//      4. Remove the node from the set of nodes with unknown least-cost-path
+//      5. For all nodes with unknown least-cost-path: if the node with the min cost is adjacent to a node with unknown
+//         least-cost-path, calculate the new current least-cost estimate min(current estimate of node with unknown lcp,
+//         current lcp estimate of node with min cost + weight between both nodes)
 class Dijkstra {
     private Graph graph;
     private int sourceNode;
