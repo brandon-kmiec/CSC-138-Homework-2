@@ -7,9 +7,7 @@ import java.util.*;
 
 public class A2Part2 {
     public static void main(String[] args) {
-        // TODO: 11/11/2023 change fileName to args[0]
-        ArrayList<String> graphData = graphFromFile("graphData.txt");
-//        int sourceNode = Integer.parseInt(args[1]);
+        ArrayList<String> graphData = graphFromFile(args[0]);
 
         Set<Integer> nodes;
         nodes = setOfNodes(graphData);
@@ -75,28 +73,54 @@ public class A2Part2 {
 }
 
 
+// Pseudocode
+//      1. Sort all edges in increasing order of their weight
+//      2. Pick the edge with the smallest weight. Include the edge if a cycle is not formed.
+//         If a cycle is formed, discard it.
+//      3. Repeat step 2 until every edge has been checked.
 class Kruskal {
     private GraphP2 graph;
-    private Set<Integer> nodes;
     private ArrayList<String> graphData;
     private int[] edgeWeights;
     private int[] node1;
     private int[] node2;
+    private int totalWeight;
+    private ArrayList<Integer> edgeWeightsAL, node1AL, node2AL;
+    private GraphP2 resultGraph;
 
     public Kruskal(GraphP2 graph, Set<Integer> nodes, ArrayList<String> graphData) {
         this.graph = graph;
-        this.nodes = nodes;
         this.graphData = graphData;
 
         edgeWeights = new int[graph.getNumEdges()];
         node1 = new int[graph.getNumEdges()];
         node2 = new int[graph.getNumEdges()];
+
+        totalWeight = 0;
+
+        edgeWeightsAL = new ArrayList<>();
+        node1AL = new ArrayList<>();
+        node2AL = new ArrayList<>();
+
+        resultGraph = new GraphP2(graph.getNumVertices());
     }
 
     public void runKruskal() {
         initialize();
         sortWeights();
-        // TODO: 11/11/2023 figure out detecting cycles
+
+        for (int i = 0; i < edgeWeights.length; i++) {
+            resultGraph.addEdge(node1[i], node2[i], edgeWeights[i]);
+            if (resultGraph.containsCycle()) {
+                resultGraph.removeEdge(node1[i], node2[i]);
+            } else {
+                totalWeight += edgeWeights[i];
+                edgeWeightsAL.add(edgeWeights[i]);
+                node1AL.add(node1[i]);
+                node2AL.add(node2[i]);
+            }
+        }
+
         outputTable();
     }
 
@@ -140,7 +164,11 @@ class Kruskal {
     }
 
     private void outputTable() {
-
+        for (int i = 0; i < edgeWeightsAL.size(); i++) {
+            System.out.print(node1AL.get(i) + " " + node2AL.get(i) + " " + edgeWeightsAL.get(i));
+            System.out.println();
+        }
+        System.out.println(totalWeight);
     }
 }
 
@@ -150,12 +178,14 @@ class GraphP2 {
     private int[][] g;  //Use adjacency matrix
     private int v;  //Number of vertices
     private int e;  //Number of edges
+    private Set<Integer> visited;
 
     //Constructor
     public GraphP2(int v) {
         g = new int[v][v];
         this.v = v;
         e = 0;
+        visited = new HashSet<>();
     }//end constructor
 
     //Methods
@@ -172,6 +202,12 @@ class GraphP2 {
         g[v2][v1] = weight;
         e++;
     }//end addEdge
+
+    public void removeEdge(int v1, int v2) {
+        g[v1][v2] = 0;
+        g[v2][v1] = 0;
+        e--;
+    }
 
     public boolean isAdjacent(int v1, int v2) {
         return g[v1][v2] > 0;
@@ -258,4 +294,34 @@ class GraphP2 {
                 str = DFS(i, visited, str);
         return str;
     }//end DFS
+
+    // Pseudocode
+    //      for every vertex that has not been visited: if cycleDFS of the current vertex is true, clear visited for
+    //      future use and return true.  Clears visited for future use and returns false as default.
+    public boolean containsCycle() {
+        for (int i = 0; i < this.v; i++) {
+            if (!visited.contains(i))
+                if (cycleDFS(i, -1)) {
+                    visited.clear();
+                    return true;
+                }
+        }
+        visited.clear();
+        return false;
+    }
+
+    // Pseudocode
+    //      add the current vertex to visited.  For every vertex that is adjacent to the current vertex and not equal
+    //      to the parent vertex: return true if the vertex has been visited or if the recursive call to cycleDFS with
+    //      new current vertex = vertex and new parent vertex = i returns true.  Return false as default.
+    private boolean cycleDFS(int i, int parent) {
+        visited.add(i);
+        for (int vertex = 0; vertex < this.v; vertex++) {
+            if (isAdjacent(i, vertex) && vertex != parent) {
+                if (visited.contains(vertex) || cycleDFS(vertex, i))
+                    return true;
+            }
+        }
+        return false;
+    }
 }//end class Graph
