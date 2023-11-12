@@ -13,9 +13,17 @@ public class A2Part2 {
 
         Set<Integer> nodes;
         nodes = setOfNodes(graphData);
-        GraphP2 graph = new GraphP2(nodes.size());
 
+        int maxNodeValue = 0;
+        for (int node : nodes) {
+            if (node > maxNodeValue)
+                maxNodeValue = node;
+        }
+        int numVertices = maxNodeValue + 1;
+
+        GraphP2 graph = new GraphP2(numVertices);
         populateGraph(graph, graphData);
+
         Kruskal kruskal = new Kruskal(graph, nodes, graphData);
         kruskal.runKruskal();
     }
@@ -88,7 +96,7 @@ class Kruskal {
     public void runKruskal() {
         initialize();
         sortWeights();
-
+        // TODO: 11/11/2023 figure out detecting cycles
         outputTable();
     }
 

@@ -13,9 +13,17 @@ public class A2Part1 {
 
         Set<Integer> nodes;
         nodes = setOfNodes(graphData);
-        Graph graph = new Graph(nodes.size());
 
+        int maxNodeValue = 0;
+        for (int node : nodes) {
+            if (node > maxNodeValue)
+                maxNodeValue = node;
+        }
+        int numVertices = maxNodeValue + 1;
+
+        Graph graph = new Graph(numVertices);
         populateGraph(graph, graphData);
+
         Dijkstra dijkstra = new Dijkstra(graph, nodes, sourceNode);
         dijkstra.runDijkstra();
     }
