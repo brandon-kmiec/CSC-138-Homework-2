@@ -16,7 +16,7 @@ public class A2Part2 {
         for (int node : nodes) {
             if (node > maxNodeValue)
                 maxNodeValue = node;
-        }
+        }//end for
         int numVertices = maxNodeValue + 1;
 
         GraphP2 graph = new GraphP2(numVertices);
@@ -24,7 +24,7 @@ public class A2Part2 {
 
         Kruskal kruskal = new Kruskal(graph, graphData);
         kruskal.runKruskal();
-    }
+    }//end main
 
     private static ArrayList<String> graphFromFile(String fileName) {
         ArrayList<String> fileContents = new ArrayList<>();
@@ -32,15 +32,14 @@ public class A2Part2 {
         try {
             File file = new File(fileName);
             Scanner reader = new Scanner(file);
-            while (reader.hasNextLine()) {
+            while (reader.hasNextLine())
                 fileContents.add(reader.nextLine());
-            }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
-        }
+        }//end try-catch
 
         return fileContents;
-    }
+    }//end graphFromFile
 
     private static Set<Integer> setOfNodes(ArrayList<String> graphData) {
         String raw;
@@ -52,9 +51,9 @@ public class A2Part2 {
             st = new StringTokenizer(raw, " ");
             nodes.add(Integer.parseInt(st.nextToken()));
             nodes.add(Integer.parseInt(st.nextToken()));
-        }
+        }//end for
         return nodes;
-    }
+    }//end setOfNodes
 
     private static void populateGraph(GraphP2 graph, ArrayList<String> graphData) {
         String raw;
@@ -68,9 +67,9 @@ public class A2Part2 {
             vertex2 = Integer.parseInt(st.nextToken());
             weight = Integer.parseInt(st.nextToken());
             graph.addEdge(vertex1, vertex2, weight);
-        }
-    }
-}
+        }//end for
+    }//end populateGraph
+}//end A2Part2
 
 
 // Algorithm
@@ -103,7 +102,7 @@ class Kruskal {
         node2AL = new ArrayList<>();
 
         resultGraph = new GraphP2(graph.getNumVertices());
-    }
+    }//end constructor
 
     public void runKruskal() {
         initialize();
@@ -118,11 +117,11 @@ class Kruskal {
                 edgeWeightsAL.add(edgeWeights[i]);
                 node1AL.add(node1[i]);
                 node2AL.add(node2[i]);
-            }
-        }
+            }//end if-else
+        }//end for
 
         outputTable();
-    }
+    }//end runKruskal
 
     private void initialize() {
         String raw;
@@ -139,8 +138,8 @@ class Kruskal {
             edgeWeights[i] = weight;
             node1[i] = vertex1;
             node2[i] = vertex2;
-        }
-    }
+        }//end for
+    }//end initialize
 
     private void sortWeights() {
         int tempWeight, tempNode1, tempNode2;
@@ -158,17 +157,17 @@ class Kruskal {
                     tempNode2 = node2[j];
                     node2[j] = node2[j + 1];
                     node2[j + 1] = tempNode2;
-                }
-            }
-        }
-    }
+                }//end if
+            }//end for
+        }//end for
+    }//end sortWeights
 
     private void outputTable() {
         for (int i = 0; i < edgeWeightsAL.size(); i++)
             System.out.println(node1AL.get(i) + " " + node2AL.get(i) + " " + edgeWeightsAL.get(i));
         System.out.println(totalWeight);
-    }
-}
+    }//end outputTable
+}//end Kruskal
 
 
 class GraphP2 {
@@ -205,7 +204,7 @@ class GraphP2 {
         g[v1][v2] = 0;
         g[v2][v1] = 0;
         e--;
-    }
+    }//end removeEdge
 
     public boolean isAdjacent(int v1, int v2) {
         return g[v1][v2] > 0;
@@ -223,7 +222,7 @@ class GraphP2 {
         if (isAdjacent(v1, v2))
             return g[v1][v2];
         return -1;
-    }
+    }//end getWeight
 
     public int[] adj(int v) {
         ArrayList<Integer> al = new ArrayList<Integer>();
@@ -302,11 +301,11 @@ class GraphP2 {
                 if (cycleDFS(i, -1)) {
                     visited.clear();
                     return true;
-                }
-        }
+                }//end if
+        }//end for
         visited.clear();
         return false;
-    }
+    }//end containsCycle
 
     // Algorithm
     //      add the current vertex to visited.  For every vertex that is adjacent to the current vertex and not equal
@@ -315,11 +314,10 @@ class GraphP2 {
     private boolean cycleDFS(int i, int parent) {
         visited.add(i);
         for (int vertex = 0; vertex < this.v; vertex++) {
-            if (isAdjacent(i, vertex) && vertex != parent) {
+            if (isAdjacent(i, vertex) && vertex != parent)
                 if (visited.contains(vertex) || cycleDFS(vertex, i))
                     return true;
-            }
-        }
+        }//end for
         return false;
-    }
-}//end class Graph
+    }//end cycleDFS
+}//end GraphP2

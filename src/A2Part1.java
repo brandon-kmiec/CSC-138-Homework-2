@@ -18,7 +18,7 @@ public class A2Part1 {
         for (int node : nodes) {
             if (node > maxNodeValue)
                 maxNodeValue = node;
-        }
+        }//end for
         int numVertices = maxNodeValue + 1;
 
         Graph graph = new Graph(numVertices);
@@ -26,7 +26,7 @@ public class A2Part1 {
 
         Dijkstra dijkstra = new Dijkstra(graph, nodes, sourceNode);
         dijkstra.runDijkstra();
-    }
+    }//end main
 
     private static ArrayList<String> graphFromFile(String fileName) {
         ArrayList<String> fileContents = new ArrayList<>();
@@ -34,15 +34,14 @@ public class A2Part1 {
         try {
             File file = new File(fileName);
             Scanner reader = new Scanner(file);
-            while (reader.hasNextLine()) {
+            while (reader.hasNextLine())
                 fileContents.add(reader.nextLine());
-            }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
-        }
+        }//end try-catch
 
         return fileContents;
-    }
+    }//end graphFromFile
 
     private static Set<Integer> setOfNodes(ArrayList<String> graphData) {
         String raw;
@@ -54,9 +53,9 @@ public class A2Part1 {
             st = new StringTokenizer(raw, " ");
             nodes.add(Integer.parseInt(st.nextToken()));
             nodes.add(Integer.parseInt(st.nextToken()));
-        }
+        }//end for
         return nodes;
-    }
+    }//end setOfNodes
 
     private static void populateGraph(Graph graph, ArrayList<String> graphData) {
         String raw;
@@ -70,9 +69,9 @@ public class A2Part1 {
             vertex2 = Integer.parseInt(st.nextToken());
             weight = Integer.parseInt(st.nextToken());
             graph.addEdge(vertex1, vertex2, weight);
-        }
-    }
-}
+        }//end for
+    }//end populateGraph
+}//end A2Part1
 
 
 // Algorithm
@@ -104,7 +103,7 @@ class Dijkstra {
 
         leastCostEstimate = new int[nodes.size()];
         predecessorNode = new int[nodes.size()];
-    }
+    }//end constructor
 
     public void runDijkstra() {
         initialize();
@@ -116,8 +115,8 @@ class Dijkstra {
                 if (leastCostEstimate[node] <= minNodeCost) {
                     minNodeCost = leastCostEstimate[node];
                     nodeWithMinCost = node;
-                }
-            }
+                }//end if
+            }//end for
             nodesUnknownLCP.remove(nodeWithMinCost);
 
             for (int node : nodesUnknownLCP) {
@@ -128,23 +127,22 @@ class Dijkstra {
                         predecessorNode[node] = nodeWithMinCost;
 
                     leastCostEstimate[node] = min;
-                }
-            }
-        }
+                }//end if
+            }//end for
+        }//end while
 
         outputTable();
-    }
+    }//end runDijkstra
 
     private void initialize() {
         for (int node : nodesUnknownLCP) {
             if (graph.isAdjacent(node, sourceNode)) {
                 leastCostEstimate[node] = graph.getWeight(node, sourceNode);
                 predecessorNode[node] = sourceNode;
-            } else {
+            } else
                 leastCostEstimate[node] = Integer.MAX_VALUE;
-            }
-        }
-    }
+        }//end for
+    }//end initialize
 
     private void outputTable() {
         for (int node : nodes) {
@@ -154,13 +152,13 @@ class Dijkstra {
                 while (currentNode != sourceNode) {
                     output = currentNode + " " + output;
                     currentNode = predecessorNode[currentNode];
-                }
+                }//end while
                 System.out.println(sourceNode + " " + output);
             } else
                 System.out.println(sourceNode + " " + sourceNode + " " + 0);
-        }
-    }
-}
+        }//end for
+    }//end outputTable
+}//end Dijkstra
 
 
 class Graph {
@@ -207,7 +205,7 @@ class Graph {
         if (isAdjacent(v1, v2))
             return g[v1][v2];
         return -1;
-    }
+    }//end getWeight
 
     public int[] adj(int v) {
         ArrayList<Integer> al = new ArrayList<Integer>();

@@ -17,7 +17,7 @@ public class A2Part3 {
         for (int node : nodes) {
             if (node > maxNodeValue)
                 maxNodeValue = node;
-        }
+        }//end for
         int numVertices = maxNodeValue + 1;
 
         GraphP3 graph = new GraphP3(numVertices);
@@ -25,7 +25,7 @@ public class A2Part3 {
 
         BellmanFord bellmanFord = new BellmanFord(graph, sourceNode, nodes);
         bellmanFord.runBellmanFord();
-    }
+    }//end main
 
     private static ArrayList<String> graphFromFile(String fileName) {
         ArrayList<String> fileContents = new ArrayList<>();
@@ -33,15 +33,14 @@ public class A2Part3 {
         try {
             File file = new File(fileName);
             Scanner reader = new Scanner(file);
-            while (reader.hasNextLine()) {
+            while (reader.hasNextLine())
                 fileContents.add(reader.nextLine());
-            }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
-        }
+        }//end try-catch
 
         return fileContents;
-    }
+    }//end graphFromFile
 
     private static Set<Integer> setOfNodes(ArrayList<String> graphData) {
         String raw;
@@ -53,9 +52,9 @@ public class A2Part3 {
             st = new StringTokenizer(raw, " ");
             nodes.add(Integer.parseInt(st.nextToken()));
             nodes.add(Integer.parseInt(st.nextToken()));
-        }
+        }//end for
         return nodes;
-    }
+    }//end setOfNodes
 
     private static void populateGraph(GraphP3 graph, ArrayList<String> graphData) {
         String raw;
@@ -69,9 +68,9 @@ public class A2Part3 {
             vertex2 = Integer.parseInt(st.nextToken());
             weight = Integer.parseInt(st.nextToken());
             graph.addEdge(vertex1, vertex2, weight);
-        }
-    }
-}
+        }//end for
+    }//end populateGraph
+}//end A2Part3
 
 
 // Algorithm
@@ -94,7 +93,7 @@ class BellmanFord {
 
         distance = new int[nodes.size()];
         predecessorNode = new int[nodes.size()];
-    }
+    }//end constructor
 
     public void runBellmanFord() {
         initialize();
@@ -107,13 +106,13 @@ class BellmanFord {
                         if (distance[j] != Integer.MAX_VALUE && newDistance < distance[i]) {
                             distance[i] = newDistance;
                             predecessorNode[i] = j;
-                        }
-                    }
-                }
-            }
+                        }//end if
+                    }//end if
+                }//end for
+            }//end for
 
-        output();
-    }
+        outputTable();
+    }//end runBellmanFord
 
     private void initialize() {
         for (int node : nodes) {
@@ -122,10 +121,10 @@ class BellmanFord {
             else
                 distance[node] = Integer.MAX_VALUE;
             predecessorNode[node] = -1;
-        }
-    }
+        }//end for
+    }//end initialize
 
-    private void output() {
+    private void outputTable() {
         for (int node : nodes) {
             String output = "" + distance[node];
             if (node != sourceNode) {
@@ -133,13 +132,13 @@ class BellmanFord {
                 while (currentNode != sourceNode && currentNode != -1) {
                     output = currentNode + " " + output;
                     currentNode = predecessorNode[currentNode];
-                }
+                }//end while
                 System.out.println(sourceNode + " " + output);
             } else
                 System.out.println(sourceNode + " " + sourceNode + " " + 0);
-        }
-    }
-}
+        }//end for
+    }//end outputTable
+}//end BellmanFord
 
 
 class GraphP3 {
@@ -176,7 +175,7 @@ class GraphP3 {
         g[v1][v2] = 0;
         g[v2][v1] = 0;
         e--;
-    }
+    }//end removeEdge
 
     public boolean isAdjacent(int v1, int v2) {
         return g[v1][v2] > 0;
@@ -194,7 +193,7 @@ class GraphP3 {
         if (isAdjacent(v1, v2))
             return g[v1][v2];
         return -1;
-    }
+    }//end getWeight
 
     public int[] adj(int v) {
         ArrayList<Integer> al = new ArrayList<Integer>();
@@ -273,11 +272,11 @@ class GraphP3 {
                 if (cycleDFS(i, -1)) {
                     visited.clear();
                     return true;
-                }
-        }
+                }//end if
+        }//end for
         visited.clear();
         return false;
-    }
+    }//end containsCycle
 
     // Pseudocode
     //      add the current vertex to visited.  For every vertex that is adjacent to the current vertex and not equal
@@ -286,11 +285,10 @@ class GraphP3 {
     private boolean cycleDFS(int i, int parent) {
         visited.add(i);
         for (int vertex = 0; vertex < this.v; vertex++) {
-            if (isAdjacent(i, vertex) && vertex != parent) {
+            if (isAdjacent(i, vertex) && vertex != parent)
                 if (visited.contains(vertex) || cycleDFS(vertex, i))
                     return true;
-            }
-        }
+        }//end for
         return false;
-    }
-}
+    }//end cycleDFS
+}//end GraphP3
