@@ -157,7 +157,7 @@ class Dijkstra {
                 }
                 System.out.println(sourceNode + " " + output);
             } else
-                System.out.println(sourceNode + " " + 0);
+                System.out.println(sourceNode + " " + sourceNode + " " + 0);
         }
     }
 }

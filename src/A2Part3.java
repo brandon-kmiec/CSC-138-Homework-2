@@ -1,20 +1,14 @@
 //Brandon Kmiec
 //A2Part3: Bellman Ford Algorithm and Dynamic Programming
 
-import jdk.jfr.Unsigned;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.math.BigInteger;
 import java.util.*;
 
 public class A2Part3 {
     public static void main(String[] args) {
-//        ArrayList<String> graphData = graphFromFile(args[0]);
-//        int sourceNode = Integer.parseInt(args[1]);
-
-        ArrayList<String> graphData = graphFromFile("graphData.txt");
-        int sourceNode = Integer.parseInt("2");
+        ArrayList<String> graphData = graphFromFile(args[0]);
+        int sourceNode = Integer.parseInt(args[1]);
 
         Set<Integer> nodes;
         nodes = setOfNodes(graphData);
@@ -80,13 +74,18 @@ public class A2Part3 {
 }
 
 
+// Algorithm
+//      1. For every vertex in graph, set distance of the vertex to Integer.MAX_VALUE and predecessor vertex to -1.
+//         Set the distance of the source vertex to 0
+//      2. Loop for numVertices - 1
+//      3. For every edge in graph, if newDistance < current distance assign to the current distance and assign the
+//         predecessor vertex.
 class BellmanFord {
     private GraphP3 graph;
     private int sourceNode;
     private Set<Integer> nodes;
     private int[] distance;
     private int[] predecessorNode;
-
 
     public BellmanFord(GraphP3 graph, int sourceNode, Set<Integer> nodes) {
         this.graph = graph;
@@ -100,33 +99,13 @@ class BellmanFord {
     public void runBellmanFord() {
         initialize();
 
-//        for (int i = 0; i < nodes.size(); i++) {
-//            for (int j = 0; j < nodes.size(); j++) {
-//                if (graph.isAdjacent(i, j)) {
-//                    int min = Math.min(distance[j], distance[i] + graph.getWeight(i, j));
-//                    if (distance[j] > min) {
-//                        predecessorNode[j] = i;
-//                    }
-//                    distance[j] = min;
-//                }
-//            }
-//        }
-
-//        for (int node : nodes) {
-//            for (int adjNode : graph.adj(node)) {
-//                int min = Math.min(distance[adjNode], distance[node] + graph.getWeight(adjNode, node));
-//                if (distance[adjNode] > min) {
-//                    predecessorNode[adjNode] = node;
-//                }
-//                distance[adjNode] = min;
-//            }
-//        }
         for (int iteration = 0; iteration < graph.getNumVertices() - 1; iteration++)
             for (int i = 0; i < graph.getNumVertices(); i++) {
                 for (int j = 0; j < graph.getNumEdges() - 2; j++) {
                     if (graph.isAdjacent(i, j)) {
-                        if (distance[j] != Integer.MAX_VALUE && distance[j] + graph.getWeight(i, j) < distance[i]) {
-                            distance[i] = distance[j] + graph.getWeight(i, j);
+                        int newDistance = distance[j] + graph.getWeight(i, j);
+                        if (distance[j] != Integer.MAX_VALUE && newDistance < distance[i]) {
+                            distance[i] = newDistance;
                             predecessorNode[i] = j;
                         }
                     }
