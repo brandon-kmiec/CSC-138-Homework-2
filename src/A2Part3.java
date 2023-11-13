@@ -1,14 +1,20 @@
 //Brandon Kmiec
 //A2Part3: Bellman Ford Algorithm and Dynamic Programming
 
+import jdk.jfr.Unsigned;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigInteger;
 import java.util.*;
 
 public class A2Part3 {
     public static void main(String[] args) {
-        ArrayList<String> graphData = graphFromFile(args[0]);
-        int sourceNode = Integer.parseInt(args[1]);
+//        ArrayList<String> graphData = graphFromFile(args[0]);
+//        int sourceNode = Integer.parseInt(args[1]);
+
+        ArrayList<String> graphData = graphFromFile("graphData.txt");
+        int sourceNode = Integer.parseInt("2");
 
         Set<Integer> nodes;
         nodes = setOfNodes(graphData);
@@ -23,6 +29,8 @@ public class A2Part3 {
         GraphP3 graph = new GraphP3(numVertices);
         populateGraph(graph, graphData);
 
+        BellmanFord bellmanFord = new BellmanFord(graph, sourceNode, nodes);
+        bellmanFord.runBellmanFord();
     }
 
     private static ArrayList<String> graphFromFile(String fileName) {
@@ -67,6 +75,89 @@ public class A2Part3 {
             vertex2 = Integer.parseInt(st.nextToken());
             weight = Integer.parseInt(st.nextToken());
             graph.addEdge(vertex1, vertex2, weight);
+        }
+    }
+}
+
+
+class BellmanFord {
+    private GraphP3 graph;
+    private int sourceNode;
+    private Set<Integer> nodes;
+    private int[] distance;
+    private int[] predecessorNode;
+
+
+    public BellmanFord(GraphP3 graph, int sourceNode, Set<Integer> nodes) {
+        this.graph = graph;
+        this.sourceNode = sourceNode;
+        this.nodes = nodes;
+
+        distance = new int[nodes.size()];
+        predecessorNode = new int[nodes.size()];
+    }
+
+    public void runBellmanFord() {
+        initialize();
+
+//        for (int i = 0; i < nodes.size(); i++) {
+//            for (int j = 0; j < nodes.size(); j++) {
+//                if (graph.isAdjacent(i, j)) {
+//                    int min = Math.min(distance[j], distance[i] + graph.getWeight(i, j));
+//                    if (distance[j] > min) {
+//                        predecessorNode[j] = i;
+//                    }
+//                    distance[j] = min;
+//                }
+//            }
+//        }
+
+//        for (int node : nodes) {
+//            for (int adjNode : graph.adj(node)) {
+//                int min = Math.min(distance[adjNode], distance[node] + graph.getWeight(adjNode, node));
+//                if (distance[adjNode] > min) {
+//                    predecessorNode[adjNode] = node;
+//                }
+//                distance[adjNode] = min;
+//            }
+//        }
+        for (int iteration = 0; iteration < graph.getNumVertices() - 1; iteration++)
+            for (int i = 0; i < graph.getNumVertices(); i++) {
+                for (int j = 0; j < graph.getNumEdges() - 2; j++) {
+                    if (graph.isAdjacent(i, j)) {
+                        if (distance[j] != Integer.MAX_VALUE && distance[j] + graph.getWeight(i, j) < distance[i]) {
+                            distance[i] = distance[j] + graph.getWeight(i, j);
+                            predecessorNode[i] = j;
+                        }
+                    }
+                }
+            }
+
+        output();
+    }
+
+    private void initialize() {
+        for (int node : nodes) {
+            if (node == sourceNode)
+                distance[node] = 0;
+            else
+                distance[node] = Integer.MAX_VALUE;
+            predecessorNode[node] = -1;
+        }
+    }
+
+    private void output() {
+        for (int node : nodes) {
+            String output = "" + distance[node];
+            if (node != sourceNode) {
+                int currentNode = node;
+                while (currentNode != sourceNode && currentNode != -1) {
+                    output = currentNode + " " + output;
+                    currentNode = predecessorNode[currentNode];
+                }
+                System.out.println(sourceNode + " " + output);
+            } else
+                System.out.println(sourceNode + " " + sourceNode + " " + 0);
         }
     }
 }

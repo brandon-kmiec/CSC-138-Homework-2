@@ -75,7 +75,7 @@ public class A2Part1 {
 }
 
 
-// Pseudocode
+// Algorithm
 //      Initialization:
 //        1. Create a set of nodes whose least-cost-path is not definitively known
 //        2. For all nodes, if the node is adjacent to the sourceNode, set the cost equal to the weight;
@@ -156,7 +156,8 @@ class Dijkstra {
                     currentNode = predecessorNode[currentNode];
                 }
                 System.out.println(sourceNode + " " + output);
-            }
+            } else
+                System.out.println(sourceNode + " " + 0);
         }
     }
 }

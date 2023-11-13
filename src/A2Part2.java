@@ -22,7 +22,7 @@ public class A2Part2 {
         GraphP2 graph = new GraphP2(numVertices);
         populateGraph(graph, graphData);
 
-        Kruskal kruskal = new Kruskal(graph, nodes, graphData);
+        Kruskal kruskal = new Kruskal(graph, graphData);
         kruskal.runKruskal();
     }
 
@@ -73,7 +73,7 @@ public class A2Part2 {
 }
 
 
-// Pseudocode
+// Algorithm
 //      1. Sort all edges in increasing order of their weight
 //      2. Pick the edge with the smallest weight. Include the edge if a cycle is not formed.
 //         If a cycle is formed, discard it.
@@ -88,7 +88,7 @@ class Kruskal {
     private ArrayList<Integer> edgeWeightsAL, node1AL, node2AL;
     private GraphP2 resultGraph;
 
-    public Kruskal(GraphP2 graph, Set<Integer> nodes, ArrayList<String> graphData) {
+    public Kruskal(GraphP2 graph, ArrayList<String> graphData) {
         this.graph = graph;
         this.graphData = graphData;
 
@@ -164,10 +164,8 @@ class Kruskal {
     }
 
     private void outputTable() {
-        for (int i = 0; i < edgeWeightsAL.size(); i++) {
-            System.out.print(node1AL.get(i) + " " + node2AL.get(i) + " " + edgeWeightsAL.get(i));
-            System.out.println();
-        }
+        for (int i = 0; i < edgeWeightsAL.size(); i++)
+            System.out.println(node1AL.get(i) + " " + node2AL.get(i) + " " + edgeWeightsAL.get(i));
         System.out.println(totalWeight);
     }
 }
@@ -295,7 +293,7 @@ class GraphP2 {
         return str;
     }//end DFS
 
-    // Pseudocode
+    // Algorithm
     //      for every vertex that has not been visited: if cycleDFS of the current vertex is true, clear visited for
     //      future use and return true.  Clears visited for future use and returns false as default.
     public boolean containsCycle() {
@@ -310,7 +308,7 @@ class GraphP2 {
         return false;
     }
 
-    // Pseudocode
+    // Algorithm
     //      add the current vertex to visited.  For every vertex that is adjacent to the current vertex and not equal
     //      to the parent vertex: return true if the vertex has been visited or if the recursive call to cycleDFS with
     //      new current vertex = vertex and new parent vertex = i returns true.  Return false as default.
